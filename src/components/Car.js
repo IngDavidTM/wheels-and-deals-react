@@ -12,21 +12,12 @@ const Car = ({ data }) => {
   const dispatch = useDispatch();
   const permission = useSelector((store) => store.cars.permission);
 
-  const displayMessage = () => {
-    const messageContainer = document.querySelector('.message-container');
-    messageContainer.classList.remove('hidden');
-    setTimeout(() => {
-      messageContainer.classList.add('hidden');
-    }, 4000);
-  };
-
   const removeCar = (id) => () => {
     dispatch(deleteCar(id));
-    displayMessage();
   };
 
   return (
-    <div className="car relative flex flex-col gap-4 justify-start items-center text-center bg-orange rounded-xl ease-in-out duration-300 hover:scale-[102%] hover:shadow-2xl">
+    <div className="car relative flex flex-col gap-4 justify-start items-center text-center bg-orange rounded-xl ease-in-out duration-300 hover:scale-[102%] hover:shadow-2xl flex-shrink-0">
       {permission && (
         <button
           className="absolute right-4 top-4 flex bg-white bg-opacity-50 rounded-full h-8 w-8 md:h-10 md:w-10"

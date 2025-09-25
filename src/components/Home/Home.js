@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const Home = () => {
+  const navigate = useNavigate();
   const background = './background.jpg';
   const logo = './logo.svg';
   const userLogin = useSelector((state) => state.loginUsers);
@@ -10,7 +11,7 @@ const Home = () => {
   const handleLogout = () => {
     sessionStorage.removeItem('userName');
     sessionStorage.removeItem('token');
-    window.location.href = '/';
+    navigate('/');
   };
 
   return (

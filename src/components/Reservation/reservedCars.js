@@ -28,7 +28,7 @@ const ReservedCars = () => {
           <div className="max-w-min w-[100%] self-center">
             <div className="cars-container m-2 flex flex-col gap-4 md:mt-8">
               {data.map((car) => (
-                <Car data={car} key={data.id} />
+                <Car data={car} key={car.id} />
               ))}
             </div>
           </div>

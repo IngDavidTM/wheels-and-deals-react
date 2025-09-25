@@ -1,4 +1,5 @@
 import { useEffect, React, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import { getCars } from '../../redux/reducers/cars';
@@ -11,6 +12,7 @@ import ModelSelect from './ModelSelect';
 const ReservationForm = () => {
   const models = useSelector((store) => store.cars.items);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   let selectedModel = '';
 
   if (sessionStorage.getItem('id')) {
@@ -26,7 +28,7 @@ const ReservationForm = () => {
     dispatch(getCars());
   }, [dispatch]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const reservationData = {
       date: reservDate,
@@ -34,10 +36,12 @@ const ReservationForm = () => {
       country,
       car_id: model,
     };
-    dispatch(addReservation(reservationData));
-    setTimeout(() => {
-      window.location.href = '/reserved';
-    }, 1000);
+    try {
+      await dispatch(addReservation(reservationData));
+      navigate('/reserved');
+    } catch (e) {
+      // keep user on the page if it fails
+    }
   };
 
   return (

@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import { allowDelete } from '../redux/reducers/cars';
 import { setLoginMessage } from '../redux/reducers/loginUsers';
@@ -7,28 +7,20 @@ import { setLoginMessage } from '../redux/reducers/loginUsers';
 const Navigation = () => {
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
   const currentUser = sessionStorage.getItem('userName') || 'Guest';
-
-  const displayMessage = () => {
-    const messageContainer = document.querySelector('.message-container');
-    messageContainer.classList.remove('hidden');
-    setTimeout(() => {
-      messageContainer.classList.add('hidden');
-    }, 4000);
-  };
 
   const activateDelete = () => {
     dispatch(allowDelete());
-    displayMessage();
   };
 
   const handleClick = () => {
     if (currentUser === 'Guest') {
-      window.location.href = '/login';
+      navigate('/login');
     } else {
       sessionStorage.removeItem('userName');
       sessionStorage.removeItem('token');
-      window.location.href = '/';
+      navigate('/');
     }
   };
 

@@ -1,14 +1,15 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import ReservationForm from './ReservationForm';
 
 const NewReservation = () => {
   const currentUser = sessionStorage.getItem('userName');
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     sessionStorage.removeItem('userName');
     sessionStorage.removeItem('token');
-    window.location.href = '/';
+    navigate('/');
   };
 
   return (

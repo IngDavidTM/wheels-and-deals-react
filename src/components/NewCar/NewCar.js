@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { v4 } from 'uuid';
@@ -12,6 +12,7 @@ const logo = './logo.svg';
 
 const NewCar = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [carData, setCarData] = useState({
     name: '',
     description: '',
@@ -23,15 +24,15 @@ const NewCar = () => {
   const handleLogout = () => {
     sessionStorage.removeItem('userName');
     sessionStorage.removeItem('token');
-    window.location.href = '/';
+    navigate('/');
   };
 
   const [Message, setMessage] = useState('');
+  const [showMessage, setShowMessage] = useState(false);
   const displayMessage = () => {
-    const messageContainer = document.querySelector('.message-container');
-    messageContainer.classList.remove('hidden');
+    setShowMessage(true);
     setTimeout(() => {
-      messageContainer.classList.add('hidden');
+      setShowMessage(false);
     }, 10000);
   };
 
@@ -51,7 +52,7 @@ const NewCar = () => {
     setMessage('Car added successfully');
     displayMessage();
     setTimeout(() => {
-      window.location.href = '/cars';
+      navigate('/cars');
     }, 1000);
   };
 
@@ -85,8 +86,7 @@ const NewCar = () => {
   };
 
   const removeMessage = () => {
-    const messageContainer = document.querySelector('.message-container');
-    messageContainer.classList.add('hidden');
+    setShowMessage(false);
   };
   const crossIcon = <FontAwesomeIcon icon={faXmark} />;
 
@@ -110,7 +110,8 @@ const NewCar = () => {
       <h1 className="text-4xl font-bold text-white">ADD A NEW CAR</h1>
       <span className="block h-0.5 w-1/2 bg-white m-2.5" />
       <form onSubmit={handleSubmit} className="relative flex flex-col gap-2 px-4 py-12 bg-black bg-opacity-50 rounded-lg">
-        <div className="message-container hidden flex bg-green text-white text-center py-2 px-4 rounded-md absolute top-2 left-1/2 transform -translate-x-1/2 w-max">
+        {showMessage && (
+        <div className="message-container flex bg-green text-white text-center py-2 px-4 rounded-md absolute top-2 left-1/2 transform -translate-x-1/2 w-max">
           <span className="message font-semibold text-sm lg:text-base">{Message}</span>
           <button
             type="button"
@@ -120,6 +121,7 @@ const NewCar = () => {
             {crossIcon}
           </button>
         </div>
+        )}
         <input
           className="bg-gray-200 rounded-full px-4 py-2 mt-2 focus:outline-none focus:bg-white"
           placeholder="Name"
