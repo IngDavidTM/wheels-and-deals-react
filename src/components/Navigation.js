@@ -15,6 +15,9 @@ const Navigation = () => {
   } = useAuth();
 
   const activateDelete = () => {
+    if (!requireLogin()) {
+      return;
+    }
     dispatch(allowDelete());
   };
 

@@ -21,7 +21,12 @@ const MobileNavigation = () => {
   } = useAuth();
 
   const activateDelete = () => {
+    if (!requireLogin()) {
+      setShowMenu(false);
+      return;
+    }
     dispatch(allowDelete());
+    setShowMenu(false);
   };
 
   const handleAuthClick = () => {
@@ -87,10 +92,7 @@ const MobileNavigation = () => {
               <li className="cursor-pointer py-4 text-xl font-semibold">
                 <button
                   type="button"
-                  onClick={() => {
-                    setShowMenu(false);
-                    activateDelete();
-                  }}
+                  onClick={activateDelete}
                 >
                   DELETE CAR
                 </button>
