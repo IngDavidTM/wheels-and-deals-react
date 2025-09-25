@@ -1,18 +1,10 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
 
 const Home = () => {
-  const navigate = useNavigate();
   const background = './background.jpg';
   const logo = './logo.svg';
-  const userLogin = useSelector((state) => state.loginUsers);
-  const currentUser = sessionStorage.getItem('userName');
-
-  const handleLogout = () => {
-    sessionStorage.removeItem('userName');
-    sessionStorage.removeItem('token');
-    navigate('/');
-  };
+  const { currentUser, isAuthenticated, logout } = useAuth();
 
   return (
     <div className="home flex flex-col">
@@ -28,7 +20,7 @@ const Home = () => {
           </Link>
         </div>
       </div>
-      {!userLogin.signed && (
+      {!isAuthenticated && (
         <div className="absolute top-0 self-center flex justify-between items-center w-[98%] mt-4 text-sm font-semibold sm:text-xl">
           <Link to="/login">
             <button type="button" className="bg-black bg-opacity-30 text-slate-100 py-2 px-6 rounded-full hover:bg-black hover:text-orange hover:opacity-80">LOGIN</button>
@@ -44,7 +36,7 @@ const Home = () => {
           <button
             type="button"
             className="bg-black bg-opacity-30 text-slate-100 py-2 px-6 rounded-full hover:bg-black hover:text-orange hover:opacity-80"
-            onClick={handleLogout}
+            onClick={logout}
           >
             LOG OUT
           </button>

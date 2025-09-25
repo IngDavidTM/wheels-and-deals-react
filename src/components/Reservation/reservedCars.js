@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import MobileNavigation from '../MobileNavigation';
 import Navigation from '../Navigation';
-
+import useAuth from '../../hooks/useAuth';
+import LOGIN_REQUIRED_MESSAGE from '../../constants/messages';
 import { getReservations } from '../../redux/reducers/reservation';
 import Car from './Car';
 
@@ -10,12 +11,15 @@ const ReservedCars = () => {
   const states = useSelector((state) => state);
   const data = states.reservations;
   const dispatch = useDispatch();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    dispatch(getReservations());
-  }, [dispatch]);
+    if (isAuthenticated) {
+      dispatch(getReservations());
+    }
+  }, [dispatch, isAuthenticated]);
 
-  if (states.loginUsers.signed) {
+  if (isAuthenticated) {
     return (
       <div className="reserved-cars">
         <Navigation />
@@ -45,7 +49,7 @@ const ReservedCars = () => {
         <h1 className="text-3xl text-gray-800 tracking-wider font-bold text-center mt-6 md:text-5xl md:tracking-widest md:mt-12">RESERVED MODELS</h1>
         <h4 className="text-sm text-gray-700 font-ibm font-light text-center mt-2 md:text-xl md:tracking-widest md:mt-4">Here are the models you have reserved</h4>
         <hr className="w-24 self-center m-4 border-t-black md:w-52 md:m-8" />
-        <h4 className="text-sm text-gray-700 font-ibm font-light text-center mt-2 md:text-xl md:tracking-widest md:mt-4">You are not logged</h4>
+        <h4 className="text-sm text-gray-700 font-ibm font-light text-center mt-2 md:text-xl md:tracking-widest md:mt-4">{LOGIN_REQUIRED_MESSAGE}</h4>
       </div>
     </div>
   );

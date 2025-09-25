@@ -1,31 +1,37 @@
 import { useDispatch } from 'react-redux';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import { allowDelete } from '../redux/reducers/cars';
-import { setLoginMessage } from '../redux/reducers/loginUsers';
+import useAuth from '../hooks/useAuth';
 
 const Navigation = () => {
   const dispatch = useDispatch();
   const location = useLocation();
-  const navigate = useNavigate();
-  const currentUser = sessionStorage.getItem('userName') || 'Guest';
+  const {
+    displayName,
+    isAuthenticated,
+    logout,
+    requireLogin,
+  } = useAuth();
 
   const activateDelete = () => {
     dispatch(allowDelete());
   };
 
-  const handleClick = () => {
-    if (currentUser === 'Guest') {
-      navigate('/login');
-    } else {
-      sessionStorage.removeItem('userName');
-      sessionStorage.removeItem('token');
-      navigate('/');
+  const handleAuthClick = () => {
+    if (!isAuthenticated) {
+      requireLogin({ message: false });
+      return;
     }
+    logout();
   };
 
-  const setMessage = () => {
-    dispatch(setLoginMessage());
+  const handleProtectedNav = (event, onSuccess = () => {}) => {
+    if (!requireLogin()) {
+      event.preventDefault();
+      return;
+    }
+    onSuccess();
   };
 
   return (
@@ -42,33 +48,18 @@ const Navigation = () => {
         </NavLink>
         <NavLink
           to="/new-reservation"
-          onClick={() => sessionStorage.removeItem('id')}
+          onClick={(event) => handleProtectedNav(event, () => sessionStorage.removeItem('id'))}
         >
           <li className="cursor-pointer py-4 text-xl font-semibold pl-4">
-            <button
-              type="button"
-              onClick={() => {
-                if (currentUser === 'Guest') {
-                  setMessage();
-                }
-              }}
-            >
-              NEW RESERVATION
-            </button>
+            NEW RESERVATION
           </li>
         </NavLink>
-        <NavLink to="/new-car">
+        <NavLink
+          to="/new-car"
+          onClick={handleProtectedNav}
+        >
           <li className="cursor-pointer py-4 text-xl font-semibold pl-4">
-            <button
-              type="button"
-              onClick={() => {
-                if (currentUser === 'Guest') {
-                  setMessage();
-                }
-              }}
-            >
-              ADD CAR
-            </button>
+            ADD CAR
           </li>
         </NavLink>
         {location.pathname.match('/cars') && (
@@ -84,14 +75,14 @@ const Navigation = () => {
         <li className="mt-auto">
           <div className="flex gap-2 items-baseline justify-center flex-wrap">
             <div className="tracking-wide text-xl mt-2 w-max text-gray-800">
-              {currentUser}
+              {displayName}
             </div>
             <button
               type="button"
               className="bg-black bg-opacity-70 text-slate-100 py-2 px-6 rounded-full hover:bg-black hover:text-orange hover:opacity-80 hover:font-bold"
-              onClick={handleClick}
+              onClick={handleAuthClick}
             >
-              {currentUser === 'Guest' ? 'LOGIN' : 'LOGOUT'}
+              {isAuthenticated ? 'LOGOUT' : 'LOGIN'}
             </button>
           </div>
         </li>

@@ -1,4 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import LOGIN_REQUIRED_MESSAGE from '../../constants/messages';
 
 const URL = 'https://wheels-and-deals.onrender.com/api/cars';
 const GET = 'wheels-and-deals/cars/GET';
@@ -6,6 +7,7 @@ const GET_INFO = 'wheels-and-deals/cars/GET_INFO';
 const ADD = 'wheels-and-deals/cars/ADD';
 const DELETE = 'wheels-and-deals/cars/DELETE';
 const ACCESS = 'wheels-and-deals/cars/SU';
+const RESET_ACCESS = 'wheels-and-deals/cars/RESET_ACCESS';
 
 const initialState = {
   items: [],
@@ -47,6 +49,12 @@ const carsReducer = (state = initialState, action) => {
         ...state,
         items: state.items.filter((car) => car.id !== action.payload.car.id),
         message: action.payload.message,
+      };
+    case RESET_ACCESS:
+      return {
+        ...state,
+        permission: false,
+        message: '',
       };
     default:
       return state;
@@ -90,10 +98,14 @@ const allowDelete = () => {
     type: ACCESS,
     payload: {
       permission: false,
-      message: 'You have to login first!',
+      message: LOGIN_REQUIRED_MESSAGE,
     },
   };
 };
+
+const resetDeletePermission = () => ({
+  type: RESET_ACCESS,
+});
 
 const deleteCar = createAsyncThunk(DELETE, async (id) => {
   const response = await fetch(`${URL}/${id}`, {
@@ -111,5 +123,6 @@ export {
   getCarInfo,
   addCar,
   allowDelete,
+  resetDeletePermission,
   deleteCar,
 };

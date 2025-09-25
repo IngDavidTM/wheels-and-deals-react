@@ -1,25 +1,19 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
 import ReservationForm from './ReservationForm';
 
 const NewReservation = () => {
-  const currentUser = sessionStorage.getItem('userName');
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    sessionStorage.removeItem('userName');
-    sessionStorage.removeItem('token');
-    navigate('/');
-  };
+  const { displayName, logout } = useAuth();
 
   return (
     <div className="mb-2 text-white flex flex-col items-center justify-center absolute w-full bg-cover bg-center bg-[url('/src/assets/form_reservation_bg01.png')] object-cover h-full">
       <div id="heading" className="fixed px-4 py-2 font-bold text-base w-full flex items-center justify-between top-0 left-0 right-0">
-        <div className="border-white border-2 bg-lime-500 rounded-full px-4 py-2 mt-2 text-center">{currentUser}</div>
+        <div className="border-white border-2 bg-lime-500 rounded-full px-4 py-2 mt-2 text-center">{displayName}</div>
         <button
           className="border-white border-2 bg-lime-500 rounded-full px-4 py-2 mt-2 text-center"
           type="button"
-          onClick={handleLogout}
+          onClick={logout}
         >
           LOG OUT
         </button>

@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import storage from './firebase';
 import { addCar } from '../../redux/reducers/cars';
+import useAuth from '../../hooks/useAuth';
 
 const logo = './logo.svg';
 
@@ -19,13 +20,7 @@ const NewCar = () => {
     photo: '',
     price: '',
   });
-  const currentUser = sessionStorage.getItem('userName');
-
-  const handleLogout = () => {
-    sessionStorage.removeItem('userName');
-    sessionStorage.removeItem('token');
-    navigate('/');
-  };
+  const { displayName, logout } = useAuth();
 
   const [Message, setMessage] = useState('');
   const [showMessage, setShowMessage] = useState(false);
@@ -97,12 +92,12 @@ const NewCar = () => {
       </Link>
       <div id="heading" className="fixed p-4 font-bold text-base w-full flex items-center justify-between top-0 left-0 right-0">
         <div className="bg-black bg-opacity-80 text-slate-100 py-2 px-6 rounded-full">
-          {currentUser}
+          {displayName}
         </div>
         <button
           className="bg-black bg-opacity-30 text-slate-100 py-2 px-6 rounded-full hover:bg-black hover:text-orange hover:opacity-80"
           type="button"
-          onClick={handleLogout}
+          onClick={logout}
         >
           LOG OUT
         </button>
